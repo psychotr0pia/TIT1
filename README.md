@@ -4,3 +4,4 @@
 - Jose Molina
 - Kevin Canales
 - Alejandro Villalobos
+- Diego Espinoza
