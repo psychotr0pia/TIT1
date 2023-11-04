@@ -7,6 +7,10 @@
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
+drop database if exists regcam;
+create database regcam;
+use regcam;
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -26,133 +30,63 @@ SET time_zone = "+00:00";
 --
 -- Estructura de tabla para la tabla `camara`
 --
-
-CREATE TABLE `camara` (
-  `id` int(11) NOT NULL,
-  `locacion` varchar(1200) NOT NULL
+drop table if exists camaras;
+CREATE TABLE camaras (
+  id_camara int(11) NOT NULL auto_increment,
+  locacion varchar(1200) NOT NULL,
+  tipo_estado varchar(25) NOT NULL,
+  primary key (id_camara)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `camara`
---
-
-INSERT INTO `camara` (`id`, `locacion`) VALUES
-(1, '123 Calle Principal y Avenida Central'),
-(2, '456 Avenida Norte y Calle Smith'),
-(3, '789 Calle 1 y Avenida Principal'),
-(4, '1011 Avenida Principal y Calle 5'),
-(5, '222 Estación de Tren, Plataforma 2'),
-(6, '333 Centro Comercial, Entrada Principal'),
-(7, '789 Calle 1 y Avenida Principal'),
-(8, '555 Calle Smith y Avenida Norte'),
-(9, '123 Calle Principal y Avenida Central'),
-(10, '222 Estación de Tren, Plataforma 2'),
-(11, '777 Avenida 2 y Calle Central'),
-(12, '333 Centro Comercial, Entrada Principal'),
-(13, '456 Avenida Norte y Calle Smith'),
-(14, '1011 Avenida Principal y Calle 5'),
-(15, '555 Calle Smith y Avenida Norte');
 
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `eventos`
 --
-
-CREATE TABLE `eventos` (
-  `id` int(11) NOT NULL,
-  `tipo` varchar(30) NOT NULL,
-  `descripcion` varchar(1200) NOT NULL
+drop table if exists eventos;
+CREATE TABLE eventos (
+  id_evento int(11) NOT NULL auto_increment,
+  tipo_evento varchar(30) NOT NULL,
+  descripcion varchar(1200) NOT NULL,
+  fecha datetime NOT NULL,
+  id_camara int(11) NOT NULL,
+  primary key (id_evento),
+  foreign key (id_camara) references camaras (id_camara) on update cascade on delete cascade
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `eventos`
 --
 
-INSERT INTO `eventos` (`id`, `tipo`, `descripcion`) VALUES
-(1, 'Asalto', ''),
-(2, 'Choque', ''),
-(3, 'Ilicito', '');
+-- INSERT INTO `eventos` (`id`, `tipo`, `descripcion`) VALUES
+-- (1, 'Asalto', ''),
+-- (2, 'Choque', ''),
+-- (3, 'Ilicito', '');
 
--- --------------------------------------------------------
 
---
--- Estructura de tabla para la tabla `registros`
---
+INSERT INTO camaras (locacion, tipo_estado) VALUES
+('123 Calle Principal y Avenida Central', 'Activo'),
+('456 Avenida Norte y Calle Smith', 'Activo'),
+('789 Calle 1 y Avenida Principal', 'Activo'),
+('1011 Avenida Principal y Calle 5', 'Activo'),
+('222 Estación de Tren, Plataforma 2', 'Activo'),
+('333 Centro Comercial, Entrada Principal', 'Activo'),
+('789 Calle 1 y Avenida Principal', 'Activo'),
+('555 Calle Smith y Avenida Norte', 'Activo'),
+('123 Calle Principal y Avenida Central', 'Activo'),
+('222 Estación de Tren, Plataforma 2', 'Activo'),
+('777 Avenida 2 y Calle Central', 'Activo'),
+('333 Centro Comercial, Entrada Principal', 'Activo'),
+('456 Avenida Norte y Calle Smith', 'Activo'),
+('1011 Avenida Principal y Calle 5', 'Activo'),
+('555 Calle Smith y Avenida Norte', 'Activo');
 
-CREATE TABLE `registros` (
-  `id` int(11) NOT NULL,
-  `fecha` datetime NOT NULL,
-  `tipo` varchar(250) NOT NULL,
-  `descripcion` varchar(1200) NOT NULL,
-  `id_camara` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO eventos (tipo_evento, descripcion, fecha, id_camara) VALUES
+('Asalto', '3', '0000-00-00 00:00:00', 3),
+('Asalto', '123123', '2023-09-27 16:09:34', 1),
+('Asalto', '123123', '0000-00-00 00:00:00', 1),
+('Asalto', '3', '0000-00-00 00:00:00', 1);
 
---
--- Volcado de datos para la tabla `registros`
---
-
-INSERT INTO `registros` (`id`, `fecha`, `tipo`, `descripcion`, `id_camara`) VALUES
-(89, '0000-00-00 00:00:00', 'Asalto', '123', 3),
-(107, '2023-09-27 16:09:34', 'Asalto', '123123', 1),
-(113, '0000-00-00 00:00:00', 'Asalto', '123123', 1),
-(116, '0000-00-00 00:00:00', 'Asalto', '3', 1);
-
---
--- Índices para tablas volcadas
---
-
---
--- Indices de la tabla `camara`
---
-ALTER TABLE `camara`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indices de la tabla `eventos`
---
-ALTER TABLE `eventos`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indices de la tabla `registros`
---
-ALTER TABLE `registros`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `id_camara` (`id_camara`);
-
---
--- AUTO_INCREMENT de las tablas volcadas
---
-
---
--- AUTO_INCREMENT de la tabla `camara`
---
-ALTER TABLE `camara`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
-
---
--- AUTO_INCREMENT de la tabla `eventos`
---
-ALTER TABLE `eventos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT de la tabla `registros`
---
-ALTER TABLE `registros`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=117;
-
---
--- Restricciones para tablas volcadas
---
-
---
--- Filtros para la tabla `registros`
---
-ALTER TABLE `registros`
-  ADD CONSTRAINT `registros_ibfk_1` FOREIGN KEY (`id_camara`) REFERENCES `camara` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
