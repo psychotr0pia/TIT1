@@ -65,21 +65,21 @@ CREATE TABLE eventos (
 
 
 INSERT INTO camaras (locacion, tipo_estado) VALUES
-('123 Calle Principal y Avenida Central', 'Activo'),
-('456 Avenida Norte y Calle Smith', 'Activo'),
-('789 Calle 1 y Avenida Principal', 'Activo'),
-('1011 Avenida Principal y Calle 5', 'Activo'),
-('222 Estación de Tren, Plataforma 2', 'Activo'),
-('333 Centro Comercial, Entrada Principal', 'Activo'),
-('789 Calle 1 y Avenida Principal', 'Activo'),
-('555 Calle Smith y Avenida Norte', 'Activo'),
-('123 Calle Principal y Avenida Central', 'Activo'),
-('222 Estación de Tren, Plataforma 2', 'Activo'),
-('777 Avenida 2 y Calle Central', 'Activo'),
-('333 Centro Comercial, Entrada Principal', 'Activo'),
-('456 Avenida Norte y Calle Smith', 'Activo'),
-('1011 Avenida Principal y Calle 5', 'Activo'),
-('555 Calle Smith y Avenida Norte', 'Activo');
+('123 Calle Principal y Avenida Central', 'Funcional'),
+('456 Avenida Norte y Calle Smith', 'Funcional'),
+('789 Calle 1 y Avenida Principal', 'Funcional'),
+('1011 Avenida Principal y Calle 5', 'Funcional'),
+('222 Estación de Tren, Plataforma 2', 'Funcional'),
+('333 Centro Comercial, Entrada Principal', 'Funcional'),
+('789 Calle 1 y Avenida Principal', 'Funcional'),
+('555 Calle Smith y Avenida Norte', 'Funcional'),
+('123 Calle Principal y Avenida Central', 'Funcional'),
+('222 Estación de Tren, Plataforma 2', 'Funcional'),
+('777 Avenida 2 y Calle Central', 'Funcional'),
+('333 Centro Comercial, Entrada Principal', 'Funcional'),
+('456 Avenida Norte y Calle Smith', 'Funcional'),
+('1011 Avenida Principal y Calle 5', 'Funcional'),
+('555 Calle Smith y Avenida Norte', 'Funcional');
 
 INSERT INTO eventos (tipo_evento, descripcion, fecha, id_camara) VALUES
 ('Asalto', '3', '0000-00-00 00:00:00', 3),

@@ -20,6 +20,9 @@ const config = () => {
     const leerLocaciones = () =>{
         return knex('camaras').select('locacion').groupBy('locacion')
     }
+    const cambiarEstado = (id_camara, estado) =>{
+        return knex('camaras').where({'id_camara': id_camara}).update({'tipo_estado': estado})
+    }
 
     // Consultas EVENTOS
     const leerEventos = () =>{
@@ -38,7 +41,7 @@ const config = () => {
 
     return{
         locacionCamara,leerCamaras, leerLocaciones, leerRegistroCam,
-        leerEventos, registrarEvento, eliminarRegistro
+        leerEventos, registrarEvento, eliminarRegistro, cambiarEstado
     };
 };
 
