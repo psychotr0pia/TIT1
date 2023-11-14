@@ -1,0 +1,17 @@
+# Use an official Node.js runtime as a parent image
+FROM node:14
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy frontend files to the working directory
+COPY . .
+
+# Install frontend dependencies (if needed)
+RUN npm install
+
+# Expose the port the frontend runs on
+EXPOSE 80
+
+# Command to start your frontend (replace with the actual command)
+CMD ["npm", "start"]

@@ -1,10 +1,11 @@
 const express = require('express');
 const server = express();
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const cors = require('cors');
 const session = require('express-session');
 const jwt = require('jsonwebtoken');
 const moment = require('moment-timezone');
+
 moment.tz.setDefault('America/Santiago');
 server.use(session({
     secret: 'secret',
@@ -15,13 +16,16 @@ server.use(session({
         maxAge: 1000 * 60 * 60 * 24
     }
 }))
-const db = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "",
+const dbConfig = {
+    host: "regcam_mysql",
+    user: "admin",
+    password: "password",
     database: "regcam",
     charset: "utf8mb4",
-});
+    port: 3306,
+};
+
+const db = mysql.createPool(dbConfig);
 
 server.use(express.json());
 server.use(cors());
