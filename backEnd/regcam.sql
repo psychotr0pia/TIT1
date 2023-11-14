@@ -30,6 +30,21 @@ SET time_zone = "+00:00";
 --
 -- Estructura de tabla para la tabla `camara`
 --
+
+drop table if exists usuarios;
+create table usuarios (
+	id_usuario int(11) not null auto_increment,
+    nombre varchar(25) not null,
+    apellido1 varchar(25) not null,
+    apellido2 varchar(25) not null,
+    clave varchar(20) not null,
+    rol varchar(25) not null,
+    primary key (id_usuario)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Estructura de tabla para la tabla `camara`
+--
 drop table if exists camaras;
 CREATE TABLE camaras (
   id_camara int(11) NOT NULL auto_increment,
@@ -50,8 +65,10 @@ CREATE TABLE eventos (
   descripcion varchar(1200) NOT NULL,
   fecha datetime NOT NULL,
   id_camara int(11) NOT NULL,
+  id_usuario int(11) NOT NULL,
   primary key (id_evento),
-  foreign key (id_camara) references camaras (id_camara) on update cascade on delete cascade
+  foreign key (id_camara) references camaras (id_camara) on update cascade on delete cascade,
+  foreign key (id_usuario) references usuarios (id_usuario) on update cascade on delete cascade
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -63,6 +80,10 @@ CREATE TABLE eventos (
 -- (2, 'Choque', ''),
 -- (3, 'Ilicito', '');
 
+INSERT INTO usuarios (id_usuario, nombre, apellido1, apellido2, clave, rol) VALUES
+(1, 'Juan', 'Fernandez', 'Toledo', '1234', 'Operario'),
+(2, 'Pedro', 'Silva', 'Arancibia', '4321', 'Operario'),
+(3, 'Sofia', 'Valenzuela', 'Carvajal', '1928', 'Administrador');
 
 INSERT INTO camaras (locacion, tipo_estado) VALUES
 ('123 Calle Principal y Avenida Central', 'Funcional'),
@@ -81,11 +102,11 @@ INSERT INTO camaras (locacion, tipo_estado) VALUES
 ('1011 Avenida Principal y Calle 5', 'Funcional'),
 ('555 Calle Smith y Avenida Norte', 'Funcional');
 
-INSERT INTO eventos (tipo_evento, descripcion, fecha, id_camara) VALUES
-('Asalto', '3', '0000-00-00 00:00:00', 3),
-('Asalto', '123123', '2023-09-27 16:09:34', 1),
-('Asalto', '123123', '0000-00-00 00:00:00', 1),
-('Asalto', '3', '0000-00-00 00:00:00', 1);
+INSERT INTO eventos (tipo_evento, descripcion, fecha, id_camara, id_usuario) VALUES
+('Asalto', '3', '0000-00-00 00:00:00', 3, 1),
+('Asalto', '123123', '2023-09-27 16:09:34', 1, 1),
+('Asalto', '123123', '0000-00-00 00:00:00', 1, 2),
+('Asalto', '3', '0000-00-00 00:00:00', 1, 1);
 
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
