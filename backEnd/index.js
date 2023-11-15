@@ -188,13 +188,13 @@ server.get("/camaras", (req, res) => {
     E.color,
     H.fechaInicio AS FechaUltimoCambio
 FROM 
-    Camara C
-    JOIN HistorialEstado H ON C.id = H.idCamara
-    JOIN EstadoCamara E ON H.idEstadoCamara = E.id
+    camara C
+    JOIN historialestado H ON C.id = H.idCamara
+    JOIN estadocamara E ON H.idEstadoCamara = E.id
 WHERE 
     H.fechaInicio = (
         SELECT MAX(H2.fechaInicio)
-        FROM HistorialEstado H2
+        FROM historialestado H2
         WHERE H2.idCamara = C.id
     )
 ORDER BY 
@@ -307,7 +307,7 @@ server.get("/actualizarRegistro/:id", (req, res) => {
 })
 
 server.get("/estados", (req, res) => {
-    let sql = "select * from estadoCamara";
+    let sql = "select * from estadocamara";
     db.query(sql, (err, result) => {
         if (err) {
             console.log(err);
