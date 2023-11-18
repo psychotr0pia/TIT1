@@ -1,8 +1,8 @@
 import React, { useState, useEffect} from 'react';
-import { correcta, incorrecta } from '../Toast/Notificaciones';
+import { correcta, incorrecta } from '../../Toast/Notificaciones';
 import { Button } from '@material-tailwind/react';
-import { useAppContext } from '../AppContext';
-import { agregarYSetearRegistros } from "../fetchApi";
+import { useAppContext } from '../../AppContext';
+import { agregarYSetearRegistros } from "../../fetchApi";
 
 function AgregarEvento() {
     const { state, dispatch } = useAppContext();
@@ -42,6 +42,7 @@ function AgregarEvento() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const idExiste = state.camaras.some(camara => camara.id === parseInt(formData.id_camara));
+        console.log(idExiste)
         if(!idExiste){
             incorrecta("La camara que ingreso no existe");
             return;

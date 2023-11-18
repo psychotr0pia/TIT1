@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import Link from "../Apiconf";
-import { correcta, incorrecta } from "../Toast/Notificaciones";
-import { useAppContext } from '../AppContext';
+import Link from "../../Apiconf";
+import { correcta, incorrecta } from "../../Toast/Notificaciones";
+import { useAppContext } from '../../AppContext';
 import { Button } from "@material-tailwind/react";
-import { actualizarYSetearRegistros } from "../fetchApi";
-import { actualizarEstadoCamara } from "../fetchApi";
+import { actualizarEstadoCamara } from "../../fetchApi";
 export default function EstadoCamara() {
     const { state, dispatch } = useAppContext();
     const estado_actual = state.EstadoCamaraSelectedCamera;

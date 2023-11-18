@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import Nav from '../componentes/Navbar';
+import Nav from '../components/Navbar';
 import { motion } from 'framer-motion';
-import TablaRecientes from '../componentes/TablaRecientes';
+import TablaRecientes from '../components/TablaRecientes';
 import { Button } from "@material-tailwind/react";
-import { useAppContext } from '../AppContext';
-import TabsDefault from '../componentes/TabsDefault';
+import { useAppContext } from '../../AppContext';
+import TabsDefault from '../components/TabsDefault';
 import { TbCapture } from 'react-icons/tb';
 import { GiCctvCamera } from 'react-icons/gi';
-import RegistroEstados from '../componentes/RegistroEstados';
+import RegistroEstados from '../components/RegistroEstados';
+import Sidebar from '../components/Sidebar';
+import AgregarEvento from '../forms/AgregarEvento';
+import EditarRegistro from '../forms/EditarRegistro';
+import VerMas from '../forms/VerMas';
 
 const Formulario = () => {
     const { state, dispatch } = useAppContext();
@@ -25,6 +29,11 @@ const Formulario = () => {
 
     return (
         <>
+            {state.showVerMasForm && <VerMas />}
+            {state.showAgregarInformacionForm && <EditarRegistro />}
+            {state.showAgregar && <AgregarEvento />}
+
+            <Sidebar></Sidebar>
             <div className='xl:ml-80 h-[calc(100vh-32px)] my-4 px-4  max-w-screen rounded-xl transition-transform duration-300 xl:translate-x-0 '>
                 <Nav></Nav>
                 <div className='text-sm  text-black flex flex-col justify-center w-full bg-white p-6 shadow-lg rounded-xl  mt-3'>
@@ -71,9 +80,9 @@ const Formulario = () => {
                                         )}
                                     </div>
                                 </div>
-                                
+
                             </div>
-                       
+
                             <TabsDefault
                                 activeTab={state.recientesActiveTab}
                                 data={[
@@ -107,22 +116,22 @@ const Formulario = () => {
 
                     <div className="mt-5 w-full rounded-lg shadow-md h-[calc(100vh-245px)] border bg-gray-100 border-gray-200">
                         <div className="overflow-y-auto scrollbar-container max-h-full bg-transparent mt-1">
-                            {state.recientesActiveTab === "eventos" && 
-                               <motion.div
-                               initial={{ opacity: 0 }}
-                               animate={{ opacity: 1 }}
-                               exit={{ opacity: 0 }}
-                               transition={{ duration: 0.4 }}
-                           ><TablaRecientes busqueda={busqueda}></TablaRecientes>
-                           </motion.div>}
-                            {state.recientesActiveTab !== "eventos" && 
-                            
-                            <motion.div
-                               initial={{ opacity: 0 }}
-                               animate={{ opacity: 1 }}
-                               exit={{ opacity: 0 }}
-                               transition={{ duration: 0.4 }}><RegistroEstados busqueda={busqueda}></RegistroEstados>
-                           </motion.div>}
+                            {state.recientesActiveTab === "eventos" &&
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.4 }}
+                                ><TablaRecientes busqueda={busqueda}></TablaRecientes>
+                                </motion.div>}
+                            {state.recientesActiveTab !== "eventos" &&
+
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.4 }}><RegistroEstados busqueda={busqueda}></RegistroEstados>
+                                </motion.div>}
                         </div>
                     </div>
                 </div>

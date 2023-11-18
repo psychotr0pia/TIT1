@@ -1,14 +1,12 @@
 // VerMas.jsx
 import React, {useEffect} from "react";
-import { useAppContext } from '../AppContext';
+import { useAppContext } from '../../AppContext';
 
 export default function VerMas() {
     const { state, dispatch } = useAppContext();
     const selectedRegistro = state.selectedRegistro;
     const handleClose = () => {
         dispatch({ type: 'TOGGLE_FORM', form: 'showVerMasForm', payload: false });
-
-        // Limpia el registro seleccionado
         dispatch({ type: 'SET_SELECTED_REGISTRO', payload: null });
     };
 

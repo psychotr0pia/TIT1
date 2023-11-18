@@ -1,13 +1,14 @@
-import Nav from "../componentes/Navbar"
+import Nav from "../components/Navbar"
 import React, { useEffect, useState } from "react";
-import Link from "../Apiconf";
+import Link from "../../Apiconf";
 import { Accordion, AccordionItem } from "@nextui-org/react";
 import IconButton from '@mui/material/IconButton';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useParams } from "react-router-dom";
 import { PiUserCircleFill } from 'react-icons/pi'
-import { useAppContext } from "../AppContext";
+import { useAppContext } from "../../AppContext";
+import Sidebar from '../components/Sidebar'
 
 export default function Historial() {
     const { id_registro } = useParams();
@@ -78,6 +79,7 @@ export default function Historial() {
 
     return (
         <>
+        <Sidebar></Sidebar>
             <div className='xl:ml-80 h-[calc(100vh-32px)] my-4 px-4 max-w-screen rounded-xl transition-transform duration-300 xl:translate-x-0 '>
                 <Nav></Nav>
                 <div className='text-sm  text-gray-800 flex flex-col justify-center w-full bg-white p-6 shadow-lg rounded-xl  mt-3 '>

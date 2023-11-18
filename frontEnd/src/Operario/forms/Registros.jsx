@@ -138,8 +138,7 @@ export default function Registros({ busqueda }) {
                         className='bg-gray-500 hover:bg-gray-400 rounded-lg transition-all duration-150'
 
                       >
-                        <RouterLink to={`/camaras/camara/${camera.id}`} key={camera.id} className='w-full bg-red-100'>
-
+                        <RouterLink to={`/camaras/camara/${camera.id}`} key={camera.id} >
                           <p>Registros</p>
                         </RouterLink>
 
@@ -148,7 +147,7 @@ export default function Registros({ busqueda }) {
                       <DropdownItem
                         className='bg-gray-500 hover:bg-gray-400 rounded-lg transition-all duration-150'
                       >
-                        <RouterLink to={"/camaras/historialCamara/" + camera.id} className='w-full bg-red-100'>
+                        <RouterLink to={"/camaras/historialCamara/" + camera.id} >
 
                           <p>Historial</p>
                         </RouterLink>

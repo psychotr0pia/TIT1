@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-11-2023 a las 02:13:00
+-- Tiempo de generación: 18-11-2023 a las 00:04:04
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -392,7 +392,8 @@ INSERT INTO `historialestado` (`id`, `idCamara`, `idEstadoCamara`, `fechaInicio`
 (355, 4, 1, '2023-11-13 20:56:07', '0000-00-00 00:00:00'),
 (356, 4, 2, '2023-11-13 20:56:19', '0000-00-00 00:00:00'),
 (357, 3, 2, '2023-11-13 21:45:51', '0000-00-00 00:00:00'),
-(358, 1, 3, '2023-11-13 21:48:50', '0000-00-00 00:00:00');
+(358, 1, 3, '2023-11-13 21:48:50', '0000-00-00 00:00:00'),
+(359, 200, 3, '2023-11-15 22:35:45', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -426,7 +427,12 @@ INSERT INTO `registros` (`id`, `responsable`, `fecha_creacion`, `fecha`, `tipo`,
 (761, 'Operario 1', '2023-11-13 21:14:26', '2023-11-13 21:14:26', 'Asalto', '123123', 2),
 (762, 'Operario 1', '2023-11-13 21:14:30', '2023-11-13 21:14:30', 'Asalto', '123123sad', 2),
 (763, 'Operario 1', '2023-11-13 21:14:32', '2023-11-13 21:14:32', 'Asalto', '123123sad', 2),
-(764, 'Operario 1', '2023-11-13 21:45:34', '2023-11-14 03:43:38', 'Asalto', 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. No sólo sobrevivió 500 años, sino que tambien ingresó como texto de relleno en documentos electrónicos, quedando esencialmente igual al original. Fue popularizado en los 60s con la creación de las hojas \"Letraset\", las cuales contenian pasajes de Lorem Ipsum, y más recientemente con software de autoedición, como por ejemplo Aldus PageMaker, el cual incluye versiones de Lorem Ipsum.', 3);
+(764, 'Operario 1', '2023-11-13 21:45:34', '2023-11-14 03:43:38', 'Asalto', 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. No sólo sobrevivió 500 años, sino que tambien ingresó como texto de relleno en documentos electrónicos, quedando esencialmente igual al original. Fue popularizado en los 60s con la creación de las hojas \"Letraset\", las cuales contenian pasajes de Lorem Ipsum, y más recientemente con software de autoedición, como por ejemplo Aldus PageMaker, el cual incluye versiones de Lorem Ipsum.', 3),
+(765, 'Operario 1', '2023-11-15 21:54:00', '2023-11-15 21:54:00', 'Asalto', 'assdasdas', 1),
+(766, 'Operario 1', '2023-11-15 22:10:36', '2023-11-15 22:10:36', 'Ilicito', 'asdasd', 1),
+(767, 'Operario 1', '2023-11-15 22:36:05', '2023-11-15 22:36:05', 'Asalto', 'sdsadasdas', 1),
+(768, 'Operario 1', '2023-11-15 22:38:07', '2023-11-15 22:38:07', 'Asalto', 'sdadasdasasdasd', 1),
+(769, 'Operario 1', '2023-11-15 22:38:09', '2023-11-15 22:38:09', 'Asalto', 'sdadasdasasdasd', 1);
 
 -- --------------------------------------------------------
 
@@ -446,7 +452,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `rol`) VALUES
-(1, 'admin', 'admin', 'admin');
+(1, 'admin', 'admin', 'Admin'),
+(2, 'Diego', 'Diego', 'Operario');
 
 --
 -- Índices para tablas volcadas
@@ -530,19 +537,19 @@ ALTER TABLE `historial`
 -- AUTO_INCREMENT de la tabla `historialestado`
 --
 ALTER TABLE `historialestado`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=359;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=360;
 
 --
 -- AUTO_INCREMENT de la tabla `registros`
 --
 ALTER TABLE `registros`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=765;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=770;
 
 --
 -- AUTO_INCREMENT de la tabla `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Restricciones para tablas volcadas

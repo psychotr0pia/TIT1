@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import Link from "../Apiconf";
+import Link from "../../Apiconf";
 import { motion, AnimatePresence } from 'framer-motion';
 import { Typography } from "@material-tailwind/react";
-import { correcta, incorrecta } from "../Toast/Notificaciones";
+import { correcta, incorrecta } from "../../Toast/Notificaciones";
 import { PiUserCircleFill } from 'react-icons/pi'
-import { useAppContext } from '../AppContext';
+import { useAppContext } from '../../AppContext';
 
 export default function RegistroEstados() {
 

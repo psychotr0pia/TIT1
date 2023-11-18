@@ -1,11 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
-import { splitCamelCase } from "../funciones";
+import { splitCamelCase } from "../../funciones";
 import {
   Typography,
 } from "@material-tailwind/react";
 export default function Bread() {
   const location = useLocation();
   const pathSegments = location.pathname.split('/').filter(crumb => crumb !== '');
+
+
 
   const crumbs = pathSegments.map((crumb, index) => {
     const isLastCrumb = index === pathSegments.length - 1;
@@ -44,6 +46,7 @@ export default function Bread() {
                 variant="small"
                 className="font-xs  hover:text-blue-500 "
               >
+               
 
                 {splitCamelCase(crumb).join(' ') === 'camara'
                   ?

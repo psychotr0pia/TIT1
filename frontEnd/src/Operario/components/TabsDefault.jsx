@@ -1,7 +1,7 @@
 import React from "react";
 import { Tabs, TabsHeader, Tab } from "@material-tailwind/react";
 
-import { useAppContext } from "../AppContext";
+import { useAppContext } from "../../AppContext";
 
 export default function UnderlineTabs({ activeTab, data, onTabClick }) {
   const { state, dispatch } = useAppContext();

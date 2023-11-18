@@ -1,12 +1,14 @@
 
 import { useEffect, useState } from 'react';
-import { registroEliminadoExitoso } from '../Toast/Notificaciones';
-import Link from '../Apiconf';
-import Nav from './Navbar';
-import TablaRegistro from './TablaRegistro';
+import { registroEliminadoExitoso } from '../../Toast/Notificaciones';
+import Link from '../../Apiconf';
+import Nav from '../components/Navbar';
+import TablaRegistro from '../components/TablaRegistro';
 import { useParams } from 'react-router-dom';
 import { Button } from '@material-tailwind/react';
-import { useAppContext } from '../AppContext';
+import { useAppContext } from '../../AppContext';
+import Sidebar from '../../Operario/components/Sidebar';
+import AgregarEvento from '../forms/AgregarEvento';
 
 export default function Overlay() {
   const { id } = useParams();
@@ -52,6 +54,8 @@ export default function Overlay() {
 
   return (
     <>
+       {state.showAgregar && <AgregarEvento />}
+    <Sidebar></Sidebar>
       <div className='p-4  xl:ml-80  h-[calc(100vh-32px)]  max-w-screen rounded-xl transition-transform duration-300 xl:translate-x-0 '>
         <Nav></Nav>
         <div className="text-sm  text-black flex flex-col justify-center w-full bg-white p-6 shadow-lg rounded  mt-3">
