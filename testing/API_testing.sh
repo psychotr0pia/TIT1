@@ -1,25 +1,36 @@
 #primero,correr los comandos de abajo
-# chmod +x test_script.sh
-# ./test_script.sh
+# chmod +x API_testing.sh
+# ./API_testing.sh
 
 #!/bin/bash
 #!/bin/bash
 
 YOUR_SERVER_ADDRESS="localhost:3001"
 
-# Test GET /
-echo -e "Testing GET /\n"
-curl "http://${YOUR_SERVER_ADDRESS}/"
-
 # Test POST /signup
-echo -e "\nTesting POST /signup\n"
-curl -X POST -H "Content-Type: application/json" -d '{"username": "your_username", "password": "your_password"}' "http://${YOUR_SERVER_ADDRESS}/signup"
+echo  "\nTesting POST /signup\n"
+curl -X POST -H "Content-Type: application/json" -d '
+    {"username": "userTEST", 
+    "password": "password_test",
+    "rol": "rol_test"}' "http://${YOUR_SERVER_ADDRESS}/signup"
 
 # Test POST /login
-echo -e "\nTesting POST /login\n"
-curl -X POST -H "Content-Type: application/json" -d '{"username": "your_username", "password": "your_password"}' "http://${YOUR_SERVER_ADDRESS}/login"
+echo "\nTesting POST /login\n"
+curl -X POST -H "Content-Type: application/json" -d '
+    {"username": "userTEST", 
+    "password": "password_test"}' "http://${YOUR_SERVER_ADDRESS}/login"
 
-# Continue testing other endpoints...
+# Register an event by sending a POST request to the server
+echo "\nTesting POST /registrarEvento\n"
+curl -X POST -H "Content-Type: application/json" -d '{
+    "responsable": "John Doe",
+    "fecha_creacion": "2023-11-13 12:30:00",
+    "fecha": "2023-11-13 13:45:00",
+    "tipo": "SomeType",
+    "descripcion": "Some Description",
+    "id_camara": 1
+}' http://localhost:3001/registrarEvento
+
 
 # Test GET /camaras
 echo -e "\nTesting GET /camaras\n"
