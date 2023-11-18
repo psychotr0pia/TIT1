@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  #regcam:
+  #  build: .
+  #  image: psychotropia/regcam
+  mysql:
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    environment:
+      #MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: regcam
+      MYSQL_CHARSET: utf8mb4
+    container_name: regcam_mysql
+    expose:
+      - 3306
+    volumes:
+      - ./regcamDUMP.sql:/docker-entrypoint-initdb.d/regcamDUMP.sql
+      #- ./create-user.sql:/docker-entrypoint-initdb.d/create-user.sql
+    #preguntarle al profe
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile-backend
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mysql
+    environment:
+      - NODE_ENV=production
+      - MYSQL_HOST=regcam_mysql
+      - MYSQL_USER=admin
+      - MYSQL_PASS=password
+      - MYSQL_DB=regcam
+    container_name: backend
+
+
+
+#  frontend:
+#    build:
+#      context: ./frontend
+#      dockerfile: Dockerfile-frontend
+#    ports:
+#      - "3000:3000"
+#    expose: 
+#      - 3000
+#    depends_on:
+#      - backend
+#    container_name: frontend

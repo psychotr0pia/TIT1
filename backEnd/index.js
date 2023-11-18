@@ -1,5 +1,5 @@
 const express = require('express');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const cors = require('cors');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
@@ -29,8 +29,8 @@ app.use(session({
 
 const db = mysql.createPool({
     host: "localhost",
-    user: "root",
-    password: "",
+    user: "admin",
+    password: "password",
     database: "regcam",
     charset: "utf8mb4",
 });
@@ -67,13 +67,18 @@ app.get('/logout', (req, res) => {
 })
 
 app.post("/registrarEvento", (req, res) => {
+    const { responsable } = req.body;
+    const { fecha_creacion } = req.body;
     const { fecha } = req.body;
     const { tipo } = req.body;
     const { descripcion } = req.body;
     const { id_camara } = req.body;
 
-    let sql = "INSERT INTO registros (fecha, tipo, descripcion, id_camara) VALUES (?,?,?,?)"
-    db.query(sql, [fecha, tipo, descripcion, id_camara], (err, result) => {
+    let sql = `INSERT INTO registros 
+                (responsable, fecha_creacion, 
+                fecha, tipo, descripcion, id_camara) 
+                VALUES (?,?,?,?,?,?)`
+    db.query(sql, [responsable, fecha_creacion, fecha, tipo, descripcion, id_camara], (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -84,7 +89,13 @@ app.post("/registrarEvento", (req, res) => {
 
 app.get("/registrosCamara/:id", (req, res) => {
     const { id } = req.params;
-    let sql = "select registros.id, registros.id_camara, registros.tipo, registros.fecha, eventos.color, registros.descripcion from registros join camara on registros.id_camara = camara.id join eventos on eventos.tipo = registros.tipo where registros.id_camara = ?";
+    let sql = `select 
+        registros.id, registros.id_camara, registros.tipo, 
+        registros.fecha, eventos.color, registros.descripcion 
+        from registros join camara on 
+        registros.id_camara = camara.id 
+        join eventos on eventos.tipo = registros.tipo 
+        where registros.id_camara = ?`;
     db.query(sql, [id], (err, result) => {
         if (err) {
             console.log(err);
@@ -116,7 +127,14 @@ app.get("/locacionCamara/:id", (req, res) => {
 });
 
 app.get("/registros", (req, res) => {
-    let sql = "SELECT registros.id, registros.responsable, registros.fecha_creacion, registros.fecha, registros.tipo, registros.descripcion, registros.id_camara, eventos.color from registros join eventos on registros.tipo = eventos.tipo order by fecha_creacion desc";
+    let sql = `SELECT 
+    registros.id, registros.responsable, 
+    registros.fecha_creacion, registros.fecha, 
+    registros.tipo, registros.descripcion, 
+    registros.id_camara, eventos.color 
+    from registros join eventos 
+    on registros.tipo = eventos.tipo 
+    order by fecha_creacion desc`;
     db.query(sql, (err, result) => {
         if (err) {
             console.log(err);
@@ -138,12 +156,12 @@ app.get("/locaciones", (req, res) => {
 
     })
 });
-
+/*
 app.post("/registrarEstados", (req, res) => {
     const datos = req.body;
     const insertPromises = datos.map((item) => {
         const { id, evento, fecha } = item;
-        const sql = "INSERT INTO Estados (id_camara, evento, fecha) VALUES (?,?,?)";
+        const sql = "INSERT INTO estadocamara (id_camara, evento, fecha) VALUES (?,?,?)";
         const values = [id, evento, fecha];
         return new Promise((resolve, reject) => {
             db.query(sql, values, (err, result) => {
@@ -165,7 +183,7 @@ app.post("/registrarEstados", (req, res) => {
             res.status(500).json({ error: 'Error interno del servidor' });
         });
 });
-
+*/
 
 app.get("/camaras", (req, res) => {
     let sql = `
@@ -176,13 +194,13 @@ app.get("/camaras", (req, res) => {
     E.color,
     H.fechaInicio AS FechaUltimoCambio
 FROM 
-    Camara C
-    JOIN HistorialEstado H ON C.id = H.idCamara
-    JOIN EstadoCamara E ON H.idEstadoCamara = E.id
+    camara C
+    JOIN historialestado H ON C.id = H.idCamara
+    JOIN estadocamara E ON H.idEstadoCamara = E.id
 WHERE 
     H.fechaInicio = (
         SELECT MAX(H2.fechaInicio)
-        FROM HistorialEstado H2
+        FROM historialestado H2
         WHERE H2.idCamara = C.id
     )
 ORDER BY 
@@ -214,7 +232,7 @@ app.get("/tiposEventos", (req, res) => {
 
 
 
-app.get("/historialEstadoCamara/:idCamara", (req, res) => {
+app.get("/historialestadoCamara/:idCamara", (req, res) => {
     const { idCamara } = req.params;
 
     let sql = `
@@ -228,13 +246,14 @@ FROM
         H.idCamara,
         H.idEstadoCamara,
         H.fechaInicio,
-        LAG(H.idEstadoCamara) OVER (PARTITION BY H.idCamara ORDER BY H.fechaInicio) AS EstadoAnteriorId
+        LAG(H.idEstadoCamara) OVER (PARTITION BY H.idCamara ORDER BY H.fechaInicio) 
+        AS EstadoAnteriorId
     FROM 
-        HistorialEstado H
+        historialestado H
     WHERE 
         H.idCamara = ?) AS HE1  -- Ajusta este número al ID de la cámara que desees consultar
-JOIN EstadoCamara EC1 ON HE1.EstadoAnteriorId = EC1.id
-JOIN EstadoCamara EC2 ON HE1.idEstadoCamara = EC2.id
+JOIN estadocamara EC1 ON HE1.EstadoAnteriorId = EC1.id
+JOIN estadocamara EC2 ON HE1.idEstadoCamara = EC2.id
 WHERE 
     HE1.EstadoAnteriorId IS NOT NULL
 ORDER BY 
@@ -266,9 +285,9 @@ app.get("/historialEstadoCamara", (req, res) => {
             H.fechaInicio,
             LAG(H.idEstadoCamara) OVER (PARTITION BY H.idCamara ORDER BY H.fechaInicio) AS EstadoAnteriorId
         FROM 
-            HistorialEstado H) AS HE1
-    JOIN EstadoCamara EC1 ON HE1.EstadoAnteriorId = EC1.id
-    JOIN EstadoCamara EC2 ON HE1.idEstadoCamara = EC2.id
+            historialestado H) AS HE1
+    JOIN estadocamara EC1 ON HE1.EstadoAnteriorId = EC1.id
+    JOIN estadocamara EC2 ON HE1.idEstadoCamara = EC2.id
     WHERE 
         HE1.EstadoAnteriorId IS NOT NULL
     ORDER BY 
@@ -290,7 +309,7 @@ app.get("/historialEstadoCamara", (req, res) => {
 app.post("/actualizarEstadoCamara", (req, res) => {
     const { idCamara, nuevoEstadoId } = req.body;
     
-    let sql = "INSERT INTO HistorialEstado (idCamara, idEstadoCamara, fechaInicio) VALUES (?, ?, NOW())";
+    let sql = "INSERT INTO historialestado (idCamara, idEstadoCamara, fechaInicio) VALUES (?, ?, NOW())";
     db.query(sql, [idCamara, nuevoEstadoId], (err, result) => {
         if (err) {
             res.status(500).json({ error: "Error al actualizar el estado de la cámara" });
@@ -332,7 +351,7 @@ app.get("/actualizarRegistro/:id", (req, res) => {
 })
 
 app.get("/estados", (req, res) => {
-    let sql = "select * from estadoCamara";
+    let sql = "select * from estadocamara";
     db.query(sql, (err, result) => {
         if (err) {
             console.log(err);
@@ -353,8 +372,8 @@ app.post("/crearCamara", (req, res) => {
                 return res.status(500).json({ error: "Error al crear las cámaras" });
             }
 
-            let sqlEstado = "INSERT INTO HistorialEstado (idCamara, idEstadoCamara, fechaInicio) VALUES (?, ?, NOW())";
-            db.query(sqlEstado, [camara.id, camara.estado], (err, resultEstado) => {
+            let sqlEstado = "INSERT INTO HistorialEstado (idCamara, idEstadoCamara, fechaInicio) VALUES ?";
+            db.query(sqlEstado, [idsCamaras], (err, resultEstado) => {
                 if (err) {
                     console.error(err);
                     return res.status(500).json({ error: "Error al establecer el estado de la cámara" });
@@ -376,9 +395,9 @@ app.get("/estadoActualCamara/:id", (req, res) => {
             E.nombreEstado AS EstadoActual,
             MAX(H.fechaInicio) AS FechaUltimoCambio
         FROM 
-            HistorialEstado H
+            historialestado H
             JOIN Camara C ON H.idCamara = C.id
-            JOIN EstadoCamara E ON H.idEstadoCamara = E.id
+            JOIN estadocamara E ON H.idEstadoCamara = E.id
         WHERE 
             C.id = ?
         GROUP BY 
@@ -523,4 +542,3 @@ app.put("/actualizarRegistro/:id", (req, res) => {
 app.listen(3001, () =>
     console.log("Corriendo en 3001")
 );
-
