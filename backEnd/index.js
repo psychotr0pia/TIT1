@@ -252,8 +252,8 @@ FROM
         historialestado H
     WHERE 
         H.idCamara = ?) AS HE1  -- Ajusta este número al ID de la cámara que desees consultar
-JOIN EstadoCamara EC1 ON HE1.EstadoAnteriorId = EC1.id
-JOIN EstadoCamara EC2 ON HE1.idEstadoCamara = EC2.id
+JOIN estadocamara EC1 ON HE1.EstadoAnteriorId = EC1.id
+JOIN estadocamara EC2 ON HE1.idEstadoCamara = EC2.id
 WHERE 
     HE1.EstadoAnteriorId IS NOT NULL
 ORDER BY 
@@ -286,8 +286,8 @@ app.get("/historialEstadoCamara", (req, res) => {
             LAG(H.idEstadoCamara) OVER (PARTITION BY H.idCamara ORDER BY H.fechaInicio) AS EstadoAnteriorId
         FROM 
             historialestado H) AS HE1
-    JOIN EstadoCamara EC1 ON HE1.EstadoAnteriorId = EC1.id
-    JOIN EstadoCamara EC2 ON HE1.idEstadoCamara = EC2.id
+    JOIN estadocamara EC1 ON HE1.EstadoAnteriorId = EC1.id
+    JOIN estadocamara EC2 ON HE1.idEstadoCamara = EC2.id
     WHERE 
         HE1.EstadoAnteriorId IS NOT NULL
     ORDER BY 
@@ -351,7 +351,7 @@ app.get("/actualizarRegistro/:id", (req, res) => {
 })
 
 app.get("/estados", (req, res) => {
-    let sql = "select * from estadoCamara";
+    let sql = "select * from estadocamara";
     db.query(sql, (err, result) => {
         if (err) {
             console.log(err);
@@ -397,7 +397,7 @@ app.get("/estadoActualCamara/:id", (req, res) => {
         FROM 
             historialestado H
             JOIN Camara C ON H.idCamara = C.id
-            JOIN EstadoCamara E ON H.idEstadoCamara = E.id
+            JOIN estadocamara E ON H.idEstadoCamara = E.id
         WHERE 
             C.id = ?
         GROUP BY 
