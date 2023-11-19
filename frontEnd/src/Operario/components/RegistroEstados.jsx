@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+//import React, { useState, useEffect } from 'react';
+//import React, { useState} from 'react';
+import React from 'react';
 import Link from "../../Apiconf";
-import { motion, AnimatePresence } from 'framer-motion';
-import { Typography } from "@material-tailwind/react";
+//import { motion, AnimatePresence } from 'framer-motion';
+//import { Typography } from "@material-tailwind/react";
 import { correcta, incorrecta } from "../../Toast/Notificaciones";
 import { PiUserCircleFill } from 'react-icons/pi'
 import { useAppContext } from '../../AppContext';
@@ -10,7 +12,7 @@ export default function RegistroEstados() {
 
     const { state, dispatch } = useAppContext();
     const registros = state.historialEstadoCamara;
-    const [isLoading, setIsLoading] = useState(true);
+    //const [isLoading, setIsLoading] = useState(true);
 
     const handleDelete = (id) => {
         fetch(Link + '/eliminarRegistro/' + id, {

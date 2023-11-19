@@ -365,7 +365,7 @@ app.post("/crearCamara", (req, res) => {
     const camaras  = req.body;
     camaras.forEach(camara => {
         // Insertar en la tabla Camara
-        let sqlCamara = "INSERT INTO Camara (id, locacion) VALUES (?, ?)";
+        let sqlCamara = "INSERT INTO camara (id, locacion) VALUES (?, ?)";
         db.query(sqlCamara, [camara.id, camara.locacion], (err, resultCamara) => {
             if (err) {
                 console.error(err);
@@ -396,7 +396,7 @@ app.get("/estadoActualCamara/:id", (req, res) => {
             MAX(H.fechaInicio) AS FechaUltimoCambio
         FROM 
             historialestado H
-            JOIN Camara C ON H.idCamara = C.id
+            JOIN camara C ON H.idCamara = C.id
             JOIN estadocamara E ON H.idEstadoCamara = E.id
         WHERE 
             C.id = ?
@@ -500,7 +500,7 @@ app.get("/registro/:id", (req, res) => {
             R.id_camara,
             T.color
         FROM 
-            Registros R
+            registros R
             JOIN eventos T ON R.tipo = T.tipo
         WHERE 
             R.id = ?;
@@ -520,7 +520,7 @@ app.get("/registro/:id", (req, res) => {
     });
 });
 
-
+//ale: no me funciona, ni idea porque. 
 app.put("/actualizarRegistro/:id", (req, res) => {
     const registroId = req.params.id;
     const { tipo, fecha, descripcion } = req.body;

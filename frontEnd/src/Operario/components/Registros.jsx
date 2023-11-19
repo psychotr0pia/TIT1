@@ -1,8 +1,8 @@
 import React from 'react';
 import { useAppContext } from '../../AppContext';
 export default function Registros() {
-    const {state, dispatch} = useAppContext();
-
+    //const {state, dispatch} = useAppContext();
+    const {state} = useAppContext();
     console.log(state.showVerMasForm);
     const handleLogout = () => {
         fetch('http://localhost:3001/logout', {

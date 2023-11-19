@@ -222,8 +222,7 @@ CREATE TABLE `historialestado` (
   `id` int(11) NOT NULL,
   `idCamara` int(11) NOT NULL,
   `idEstadoCamara` int(11) NOT NULL,
-  `fechaInicio` datetime NOT NULL,
-  `fechaFin` datetime NOT NULL
+  `fechaInicio` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --

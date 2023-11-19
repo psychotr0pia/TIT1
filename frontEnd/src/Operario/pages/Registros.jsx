@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import Link from '../../Apiconf';
-import { Link as ReactLink } from 'react-router-dom';
+//import { Link as ReactLink } from 'react-router-dom';
 import { Accordion, AccordionItem } from "@nextui-org/react";
 import IconButton from '@mui/material/IconButton';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -15,7 +15,8 @@ export default function Registros({ busqueda }) {
   const { state, dispatch } = useAppContext();
   const [locaciones, setLocaciones] = useState([]);
   const camaras = state.camaras;
-  const [isLoading, setIsLoading] = useState(true);
+  //const [isLoading, setIsLoading] = useState(true);
+  const [setIsLoading] = useState(true);
 
   useEffect(() => {
     fetch(Link + '/locaciones')

@@ -1,5 +1,5 @@
 import React from 'react';
-import Registros from '../Operario/components/Registros';
+//import Registros from '../Operario/components/Registros';
 import Admin from '../Admin/components/Admin';
 import Load from '../Operario/Load';
 import Recientes from '../Operario/pages/Recientes';

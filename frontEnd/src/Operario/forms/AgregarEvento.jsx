@@ -11,7 +11,7 @@ function AgregarEvento() {
 
     const [formData, setFormData] = useState({
         tipo: eventos.length > 0 ? eventos[0].tipo : '',
-        responsable: 'Operario 1',
+        responsable: 'Operario 1', //cambiarlo para conseguir el responsable por cookie o session
         fecha: '',
         descripcion: '',
         id_camara: camaraSeleccionada ? camaraSeleccionada : '',

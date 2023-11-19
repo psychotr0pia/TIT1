@@ -12,8 +12,10 @@ import AgregarEvento from '../forms/AgregarEvento';
 
 export default function Overlay() {
   const { id } = useParams();
-  const [loading, setIsLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
+  //const [loading, setIsLoading] = useState(true);
+  const [setIsLoading] = useState(true);
+  //const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm] = useState('');
   const [datos, setDatos] = useState([]);
   const { state, dispatch } = useAppContext();
   const [busqueda, setBusqueda] = useState('');
