@@ -19,7 +19,8 @@ services:
     expose:
       - 3306
     volumes:
-      - ./regcamDUMP.sql:/docker-entrypoint-initdb.d/regcamDUMP.sql
+      - ./regcamDUMP.sql:/docker-entrypoint-initdb.d/regcamDUMP.sql #dump db
+      #- ./mysql:/var/lib/mysql #donde se guardara data
       #- ./create-user.sql:/docker-entrypoint-initdb.d/create-user.sql
     #preguntarle al profe
   backend:
@@ -40,14 +41,16 @@ services:
 
 
 
-#  frontend:
-#    build:
-#      context: ./frontend
-#      dockerfile: Dockerfile-frontend
-#    ports:
-#      - "3000:3000"
-#    expose: 
-#      - 3000
-#    depends_on:
-#      - backend
-#    container_name: frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile-frontend
+    ports:
+      - "3000:3000"
+    expose: 
+      - 3000
+    depends_on:
+      - backend
+    container_name: frontend
+  #volumes:
+  #  mysql:

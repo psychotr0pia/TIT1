@@ -28,11 +28,12 @@ app.use(session({
 }))
 
 const db = mysql.createPool({
-    host: "localhost",
+    host: "regcam_mysql",
     user: "admin",
     password: "password",
     database: "regcam",
     charset: "utf8mb4",
+    //test
 });
 
 //login
@@ -520,7 +521,12 @@ app.get("/registro/:id", (req, res) => {
     });
 });
 
-//ale: no me funciona, ni idea porque. 
+//ale: no me funciona en front, pero si con curl
+// probe con el siguiente comando:
+// curl -X PUT -H "Content-Type: application/json" -d '
+//{"tipo": "Asalto", "fecha": "'"$(date '+%Y-%m-%d %H:%M:%S')"'", \
+//"descripcion": "your_description_value"}' http://localhost:3001/actualizarRegistro/774
+
 app.put("/actualizarRegistro/:id", (req, res) => {
     const registroId = req.params.id;
     const { tipo, fecha, descripcion } = req.body;
