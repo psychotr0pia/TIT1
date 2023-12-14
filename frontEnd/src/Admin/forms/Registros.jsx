@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import Link from '../../Apiconf';
+import Link from '../Apiconf';
 import { Link as ReactLink } from 'react-router-dom';
 import { Accordion, AccordionItem } from "@nextui-org/react";
 import IconButton from '@mui/material/IconButton';
@@ -9,7 +9,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Button } from '@material-tailwind/react';
 import { Dropdown, DropdownItem, DropdownTrigger, DropdownMenu } from '@nextui-org/react';
 import { Link as RouterLink } from 'react-router-dom';
-import { useAppContext } from '../../AppContext';
+import { useAppContext } from '../AppContext';
 
 export default function Registros({ busqueda }) {
   const { state, dispatch } = useAppContext();
@@ -138,8 +138,7 @@ export default function Registros({ busqueda }) {
                         className='bg-gray-500 hover:bg-gray-400 rounded-lg transition-all duration-150'
 
                       >
-                        <RouterLink to={`/camaras/camara/${camera.id}`} key={camera.id} className='w-full bg-red-100'>
-
+                        <RouterLink to={`/camaras/camara/${camera.id}`} key={camera.id} >
                           <p>Registros</p>
                         </RouterLink>
 
@@ -148,7 +147,7 @@ export default function Registros({ busqueda }) {
                       <DropdownItem
                         className='bg-gray-500 hover:bg-gray-400 rounded-lg transition-all duration-150'
                       >
-                        <RouterLink to={"/camaras/historialCamara/" + camera.id} className='w-full bg-red-100'>
+                        <RouterLink to={"/camaras/historialCamara/" + camera.id} >
 
                           <p>Historial</p>
                         </RouterLink>

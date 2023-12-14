@@ -43,7 +43,7 @@ export default function Sidebar() {
       <div className="m-4">
         <ul className="mb-4 flex flex-col gap-2 ">
           <li >
-            <Link to="/operario/registros"
+            <Link to="/admin/registros"
               className='w-full'>
               <Button
                 className={"w-full h-12 flex items-center gap-4 px-4 focus:outline-none " + (location.pathname.includes('/operario/registros') ? "bg-azul shadow-md hover:shadow-lg hover:shadow-blue-300/40 " : " hover:bg-white/10 active:bg-white/30 bg-transparent shadow-none hover:shadow-none")}
@@ -59,7 +59,7 @@ export default function Sidebar() {
             </Link>
           </li>
           <li >
-            <Link to="/operario/camaras"
+            <Link to="/admin/camaras"
               className='w-full'>
               <Button
                 className={"w-full h-12 flex items-center gap-4 px-4 focus:outline-none " + (location.pathname.includes('/operario/camaras') ? "bg-azul shadow-md hover:shadow-lg hover:shadow-blue-300/40 " : " hover:bg-white/10 active:bg-white/30 bg-transparent shadow-none hover:shadow-none")}
@@ -73,6 +73,63 @@ export default function Sidebar() {
                 </Typography>
               </Button>
             </Link>
+          </li>
+        </ul>
+        <ul className="mb-4 flex flex-col gap-2">
+          <li class="mx-3.5 mt-4 mb-2"><p class="block antialiased font-sans text-sm leading-normal text-white font-black uppercase opacity-75">Opciones de admin</p></li>
+          <li >
+          <Link to="/admin/AgregarCamara"
+              className='w-full'>  
+            <Button
+              className="w-full h-12 flex items-center gap-4 px-4 bg-azul hover:shadow-blue-300/40  hover:bg-white/10 active:bg-white/30 bg-transparent shadow-none hover:shadow-none"
+              onClick={() => handleClickAgregarCamara()}
+
+            >
+              <Typography
+                color="inherit"
+                className="semibold  text-[15px] capitalize"
+              >
+                Agregar camara
+              </Typography>
+            </Button>
+            </Link>
+          </li>
+          <li >
+            <Button
+              className="w-full h-12 flex items-center gap-4 px-4 bg-azul hover:shadow-blue-300/40  hover:bg-white/10 active:bg-white/30 bg-transparent shadow-none hover:shadow-none"
+
+            >
+              <Typography
+                color="inherit"
+                className="semibold text-[15px] capitalize"
+              >
+                Agregar estado
+              </Typography>
+            </Button>
+          </li>
+          <li >
+            <Button
+              className="w-full h-12 flex items-center gap-4 px-4 bg-azul hover:shadow-blue-300/40  hover:bg-white/10 active:bg-white/30 bg-transparent shadow-none hover:shadow-none"
+            >
+              <Typography
+                color="inherit"
+                className="semibold text-[15px] capitalize"
+              >
+                Agregar sector
+              </Typography>
+            </Button>
+          </li>
+          <li >
+            <Button
+              className="w-full h-12 flex items-center gap-4 px-4 bg-azul hover:shadow-blue-300/40  hover:bg-white/10 active:bg-white/30 bg-transparent shadow-none hover:shadow-none"
+            >
+              <Typography
+                color="inherit"
+                className="semibold text-[15px] capitalize"
+              >
+                Agregar/eliminar usuario
+              </Typography>
+            </Button>
           </li>
         </ul>
       </div>

@@ -31,7 +31,7 @@ export default function  Load() {
         dispatch({ type: 'SET_REGISTROS', payload: registrosData });
         dispatch({ type: 'TOGGLE_EVENTOS', payload: tiposEventosData });
         dispatch({ type: 'SET_historialEstadoCamara', payload: data });
-        navigate('/operario/registros');
+        navigate('/Admin/registros');
 
       } catch (error) {
         console.error(error);
