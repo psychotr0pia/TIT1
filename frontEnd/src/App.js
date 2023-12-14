@@ -2,8 +2,8 @@ import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import Home from './Home';
 import Login from './Login';
 import { AuthProvider } from './AuthContext';
-import PrivateRoute from './Routes/PrivateRoute';
-import { rutas_operario, rutas_admin } from './Routes/routes';
+import PrivateRoute from './routes/PrivateRoute';
+import { rutas_operario, rutas_admin } from './routes/Routes';
 import { AppProvider } from './AppContext';
 import { Toaster } from 'react-hot-toast';
 
