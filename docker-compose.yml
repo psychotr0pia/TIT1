@@ -14,15 +14,13 @@ services:
       MYSQL_DATABASE: regcam
       MYSQL_CHARSET: utf8mb4
     container_name: regcam_mysql
-    ports:
-      - 3306:3306
     expose:
       - 3306
     networks:
       - red_internal
     volumes:
       - ./regcamDUMP.sql:/docker-entrypoint-initdb.d/regcamDUMP.sql #dump db
-      #- ./mysql:/var/lib/mysql #donde se guardara data
+      - dataregcam:/var/lib/mysql #donde se guardara data
       #- ./create-user.sql:/docker-entrypoint-initdb.d/create-user.sql
     #preguntarle al profe
   backend:
@@ -34,8 +32,8 @@ services:
     depends_on:
       - mysql
     environment:
-      VIRTUAL_HOST: api.localhost
-      CORS_ORIGIN: http://localhost
+      VIRTUAL_HOST: api.regcam.informatica.uv.cl
+      CORS_ORIGIN: http://regcam.informatica.uv.cl
       NODE_ENV: production
       MYSQL_HOST: regcam_mysql
       MYSQL_PORT: 3306
@@ -52,12 +50,12 @@ services:
       context: ./frontend
       dockerfile: Dockerfile-frontend
       args:
-        REACT_APP_ENDPOINT: http://api.localhost
+        REACT_APP_ENDPOINT: http://api.regcam.informatica.uv.cl
     expose: 
       - 80
     environment:
-      VIRTUAL_HOST: localhost
-      REACT_APP_ENDPOINT: http://api.localhost
+      VIRTUAL_HOST: regcam.informatica.uv.cl
+      REACT_APP_ENDPOINT: http://api.regcam.informatica.uv.cl
     depends_on:
       - backend
     container_name: frontend
@@ -65,22 +63,14 @@ services:
       - red_proxy
       - red_internal
 
-  nginx-proxy:
-    command: "sh -c 'echo \"server_tokens off; proxy_connect_timeout 300; proxy_send_timeout 300; proxy_read_timeout 90m; send_timeout 300;client_max_body_size 2048M;\" > /etc/nginx/conf.d/my_proxy.conf; forego start -r'"
-    image: jwilder/nginx-proxy # imagen desde docker HUB
-    container_name: nginx-proxy # nombre del contenedor
-    ports:
-      # Asignacion del puerto 80 al proxy
-      - "80:80"
-    volumes:
-      # Entrega información de de Docker 
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-    networks:
-      - red_proxy
 
 networks:
   red_proxy:
     external:
       name: network-docker
   red_internal:
+
+volumes:
+  dataregcam:
+
     
