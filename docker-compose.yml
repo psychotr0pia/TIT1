@@ -6,8 +6,6 @@ services:
   #  image: psychotropia/regcam
   mysql:
     image: mysql:latest
-    ports:
-      - "3306:3306"
     environment:
       #MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       MYSQL_ROOT_PASSWORD: password
@@ -16,8 +14,12 @@ services:
       MYSQL_DATABASE: regcam
       MYSQL_CHARSET: utf8mb4
     container_name: regcam_mysql
+    ports:
+      - 3306:3306
     expose:
       - 3306
+    networks:
+      - red_internal
     volumes:
       - ./regcamDUMP.sql:/docker-entrypoint-initdb.d/regcamDUMP.sql #dump db
       #- ./mysql:/var/lib/mysql #donde se guardara data
@@ -27,30 +29,58 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile-backend
-    ports:
-      - "3001:3001"
+    expose: 
+      - 80
     depends_on:
       - mysql
     environment:
-      - NODE_ENV=production
-      - MYSQL_HOST=regcam_mysql
-      - MYSQL_USER=admin
-      - MYSQL_PASS=password
-      - MYSQL_DB=regcam
+      VIRTUAL_HOST: api.localhost
+      CORS_ORIGIN: http://localhost
+      NODE_ENV: production
+      MYSQL_HOST: regcam_mysql
+      MYSQL_PORT: 3306
+      MYSQL_USER: admin
+      MYSQL_PASS: password
+      MYSQL_DB: regcam
     container_name: backend
-
-
+    networks:
+      - red_proxy
+      - red_internal
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile-frontend
-    ports:
-      - "3000:3000"
+      args:
+        REACT_APP_ENDPOINT: http://api.localhost
     expose: 
-      - 3000
+      - 80
+    environment:
+      VIRTUAL_HOST: localhost
+      REACT_APP_ENDPOINT: http://api.localhost
     depends_on:
       - backend
     container_name: frontend
-  #volumes:
-  #  mysql:
+    networks:
+      - red_proxy
+      - red_internal
+
+  nginx-proxy:
+    command: "sh -c 'echo \"server_tokens off; proxy_connect_timeout 300; proxy_send_timeout 300; proxy_read_timeout 90m; send_timeout 300;client_max_body_size 2048M;\" > /etc/nginx/conf.d/my_proxy.conf; forego start -r'"
+    image: jwilder/nginx-proxy # imagen desde docker HUB
+    container_name: nginx-proxy # nombre del contenedor
+    ports:
+      # Asignacion del puerto 80 al proxy
+      - "80:80"
+    volumes:
+      # Entrega información de de Docker 
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - red_proxy
+
+networks:
+  red_proxy:
+    external:
+      name: network-docker
+  red_internal:
+    

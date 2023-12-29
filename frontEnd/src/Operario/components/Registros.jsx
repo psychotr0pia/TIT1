@@ -1,11 +1,12 @@
 import React from 'react';
 import { useAppContext } from '../../AppContext';
+import Link from '../../Apiconf';
 export default function Registros() {
     const {state, dispatch} = useAppContext();
 
     console.log(state.showVerMasForm);
     const handleLogout = () => {
-        fetch('http://localhost:3001/logout', {
+        fetch(Link + '/logout', {
             method: 'GET',
             credentials: 'include',
             headers: {

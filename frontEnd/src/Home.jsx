@@ -1,11 +1,13 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from './AuthContext';
+import Link from "./Apiconf";
+
 export default function Home() {
     const {setRol } = useAuth();
     const navigate = useNavigate();
     useEffect(() => {
-        fetch('http://localhost:3001/', {
+        fetch(Link, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -15,6 +17,7 @@ export default function Home() {
         })
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             if(data.valid){
                 setRol(data.rol);
                 if(data.rol === "Operario") {

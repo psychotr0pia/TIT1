@@ -6,6 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Sidebar from '../components/Sidebar';
+import Link from '../../Apiconf';
 export default function HistorialCamara() {
     const { id_camara } = useParams();
     const [historial, setHistorial] = useState([]);
@@ -13,7 +14,7 @@ export default function HistorialCamara() {
 
     useEffect(() => {
         setIsLoading(true);
-        fetch(`http://localhost:3001/historialEstadoCamara/${id_camara}`)
+        fetch(`${Link}/historialEstadoCamara/${id_camara}`)
             .then(res => res.json())
             .then(data => {
                 setHistorial(data);

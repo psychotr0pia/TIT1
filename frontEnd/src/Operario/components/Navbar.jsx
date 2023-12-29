@@ -1,12 +1,13 @@
 import React from "react";
 import Bread from "./Bread";
+import Link from "../../Apiconf";
 import {
     Button
 } from "@material-tailwind/react";
 export default function Nav() {
 
     const handleLogout = () => {
-        fetch('http://localhost:3001/logout', {
+        fetch( Link + '/logout', {
             method: 'GET',
             credentials: 'include',
             headers: {

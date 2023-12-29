@@ -1,134 +1,144 @@
-const express = require('express');
-const mysql = require('mysql2');
-const cors = require('cors');
-const session = require('express-session');
-const cookieParser = require('cookie-parser');
-const moment = require('moment-timezone');
-moment.tz.setDefault('America/Santiago');
+const express = require("express");
+const mysql = require("mysql2");
+const cors = require("cors");
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
+const moment = require("moment-timezone");
+moment.tz.setDefault("America/Santiago");
 
 const app = express();
-app.use(cors({
-    origin: ['http://localhost:3000'],
-    methods: ['GET', 'POST'],
+URL_CORSA = process.env.CORS_ORIGIN || "http://localhost:3000";
+app.use(
+  cors({
+    origin: [URL_CORSA],
+    methods: ["GET", "POST"],
     credentials: true,
-}));
+  })
+);
 app.use(express.json());
+
+app.enable("trust proxy", true);
 app.use(cookieParser());
-
-
-app.use(session({
-    secret: 'secret',
+app.use(
+  session({
+    secret: "dfsdfdsfsdfsdf",
     resave: false,
-    saveUninitialized: false,
+    proxy: true,
+    saveUninitialized: true,
     cookie: {
-        secure: false,
-        maxAge: 1000 * 60 * 60 * 24
+      secure: false,
+      maxAge: 1000 * 60 * 60 * 24,
     },
-    
-}))
+  })
+);
 
 const db = mysql.createPool({
-    host: "regcam_mysql",
-    user: "admin",
-    password: "password",
-    database: "regcam",
-    charset: "utf8mb4",
-    //test
+  host: process.env.MYSQL_HOST || "localhost",
+  port: process.env.MYSQL_PORT || 3306,
+  user: process.env.MYSQL_USER || "root",
+  password: process.env.MYSQL_PASS || "password",
+  database: process.env.MYSQL_DB || "regcam",
+  charset: "utf8mb4",
+  //test
 });
 
 //login
 
-app.get('/', (req, res) => {
-    if (req.session.rol) {
-        return res.json({ valid: true, rol: req.session.rol });
-    } else {
-        return res.json({ valid: false });
-    }
-})
-
-
-app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-    let sql = "select * from users where username = ? and password = ?";
-    db.query(sql, [username, password], (err, result) => {
-        if(result.length > 0) {
-          req.session.rol = result[0].rol;
-          
-          return res.json({Login: true})
-
-        } else {
-            return res.json({Login: false})
-        }
-    })
+app.get("/", (req, res) => {
+  console.log("/", req.session.rol);
+  if (req.session.rol) {
+    return res.json({ valid: true, rol: req.session.rol });
+  } else {
+    //return res.json({ valid: false });
+    return res.json({ valid: true, rol: "Operario" });
+  }
 });
 
-app.get('/logout', (req, res) => {
-    req.session.destroy();
-    return res.json("Success");
-})
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+  let sql = "select * from users where username = ? and password = ?";
+  db.query(sql, [username, password], (err, result) => {
+    console.log(result);
+    if (result.length > 0) {
+      req.session.rol = result[0].rol;
+      console.log("/login", req.session.rol);
+      return res.json({ Login: true });
+    } else {
+      return res.json({ Login: false });
+    }
+  });
+});
+
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  return res.json("Success");
+});
 
 app.post("/registrarEvento", (req, res) => {
-    const { responsable } = req.body;
-    const { fecha_creacion } = req.body;
-    const { fecha } = req.body;
-    const { tipo } = req.body;
-    const { descripcion } = req.body;
-    const { id_camara } = req.body;
+  const { responsable } = req.body;
+  const { fecha_creacion } = req.body;
+  const { fecha } = req.body;
+  const { tipo } = req.body;
+  const { descripcion } = req.body;
+  const { id_camara } = req.body;
 
-    let sql = `INSERT INTO registros 
+  let sql = `INSERT INTO registros 
                 (responsable, fecha_creacion, 
                 fecha, tipo, descripcion, id_camara) 
-                VALUES (?,?,?,?,?,?)`
-    db.query(sql, [responsable, fecha_creacion, fecha, tipo, descripcion, id_camara], (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.send(result);
-        }
-    })
+                VALUES (?,?,?,?,?,?)`;
+  db.query(
+    sql,
+    [responsable, fecha_creacion, fecha, tipo, descripcion, id_camara],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
 });
 
 app.get("/registrosCamara/:id", (req, res) => {
-    const { id } = req.params;
-    let sql = `select 
+  const { id } = req.params;
+  let sql = `select 
         registros.id, registros.id_camara, registros.tipo, 
         registros.fecha, eventos.color, registros.descripcion 
         from registros join camara on 
         registros.id_camara = camara.id 
         join eventos on eventos.tipo = registros.tipo 
         where registros.id_camara = ?`;
-    db.query(sql, [id], (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.send(result);
-        }
-
-    })
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
 });
 
-
 app.delete("/eliminarRegistro/:id", (req, res) => {
-    const { id } = req.params;
-    let sql = "delete from registros where id = ?"
-    db.query(sql, [id], (err, result) => { err ? console.log(err) : res.send(result) })
-})
-
+  const { id } = req.params;
+  let sql = "delete from registros where id = ?";
+  db.query(sql, [id], (err, result) => {
+    err ? console.log(err) : res.send(result);
+  });
+});
 
 app.get("/locacionCamara/:id", (req, res) => {
-    const { id } = req.params;
-    let sql = "SELECT locacion from camara where id = ?";
-    db.query(sql, [id], (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.send(result);
-        }
-    })
+  const { id } = req.params;
+  let sql = "SELECT locacion from camara where id = ?";
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
 });
 
 app.get("/registros", (req, res) => {
-    let sql = `SELECT 
+  let sql = `SELECT 
     registros.id, registros.responsable, 
     registros.fecha_creacion, registros.fecha, 
     registros.tipo, registros.descripcion, 
@@ -136,26 +146,24 @@ app.get("/registros", (req, res) => {
     from registros join eventos 
     on registros.tipo = eventos.tipo 
     order by fecha_creacion desc`;
-    db.query(sql, (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.send(result);
-        }
-
-    })
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
 });
 
 app.get("/locaciones", (req, res) => {
-    let sql = "SELECT locacion from camara group by locacion";
-    db.query(sql, (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.send(result);
-        }
-
-    })
+  let sql = "SELECT locacion from camara group by locacion";
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
 });
 /*
 app.post("/registrarEstados", (req, res) => {
@@ -187,7 +195,7 @@ app.post("/registrarEstados", (req, res) => {
 */
 
 app.get("/camaras", (req, res) => {
-    let sql = `
+  let sql = `
     SELECT 
     C.id,
     C.locacion,
@@ -207,36 +215,33 @@ WHERE
 ORDER BY 
     C.id;
     `;
-    db.query(sql, (err, result) => {
-        if (err) {
-            console.log(err);
-            res.status(500).json({ error: "Hubo un error en la consulta a la base de datos" });
-        } else {
-            res.send(result);
-        }
-    });
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+      res
+        .status(500)
+        .json({ error: "Hubo un error en la consulta a la base de datos" });
+    } else {
+      res.send(result);
+    }
+  });
 });
-
 
 app.get("/tiposEventos", (req, res) => {
-    let sql = "SELECT * from eventos";
-    db.query(sql, (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.send(result);
-        }
-
-    })
+  let sql = "SELECT * from eventos";
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
 });
 
-
-
-
 app.get("/historialestadoCamara/:idCamara", (req, res) => {
-    const { idCamara } = req.params;
+  const { idCamara } = req.params;
 
-    let sql = `
+  let sql = `
     SELECT
     HE1.idCamara,
     EC1.nombre AS EstadoAnterior,
@@ -260,20 +265,21 @@ WHERE
 ORDER BY 
     HE1.fechaInicio desc;
     `;
-    
-    db.query(sql, [idCamara], (err, result) => {
-        if (err) {
-            console.error(err);
-            res.status(500).json({ error: "Error al obtener el historial de la cámara" });
-        } else {
-            res.json(result);
-        }
-    });
+
+  db.query(sql, [idCamara], (err, result) => {
+    if (err) {
+      console.error(err);
+      res
+        .status(500)
+        .json({ error: "Error al obtener el historial de la cámara" });
+    } else {
+      res.json(result);
+    }
+  });
 });
 
 app.get("/historialEstadoCamara", (req, res) => {
-
-    let sql = `
+  let sql = `
     SELECT
     HE1.idCamara,
     EC1.nombre AS EstadoAnterior,
@@ -294,102 +300,106 @@ app.get("/historialEstadoCamara", (req, res) => {
     ORDER BY 
          HE1.fechaInicio desc;
     `;
-    
-    db.query(sql, (err, result) => {
-        if (err) {
-            console.error(err);
-            res.status(500).json({ error: "Error al obtener el historial de las cámaras" });
-        } else {
-            res.json(result);
-        }
-    });
+
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error(err);
+      res
+        .status(500)
+        .json({ error: "Error al obtener el historial de las cámaras" });
+    } else {
+      res.json(result);
+    }
+  });
 });
-
-
 
 app.post("/actualizarEstadoCamara", (req, res) => {
-    const { idCamara, nuevoEstadoId } = req.body;
-    
-    let sql = "INSERT INTO historialestado (idCamara, idEstadoCamara, fechaInicio) VALUES (?, ?, NOW())";
-    db.query(sql, [idCamara, nuevoEstadoId], (err, result) => {
-        if (err) {
-            res.status(500).json({ error: "Error al actualizar el estado de la cámara" });
-        } else {
-            res.status(200).json({ message: "Estado de la cámara actualizado correctamente" });
-        }
-    });
+  const { idCamara, nuevoEstadoId } = req.body;
+
+  let sql =
+    "INSERT INTO historialestado (idCamara, idEstadoCamara, fechaInicio) VALUES (?, ?, NOW())";
+  db.query(sql, [idCamara, nuevoEstadoId], (err, result) => {
+    if (err) {
+      res
+        .status(500)
+        .json({ error: "Error al actualizar el estado de la cámara" });
+    } else {
+      res
+        .status(200)
+        .json({ message: "Estado de la cámara actualizado correctamente" });
+    }
+  });
 });
-
-
 
 app.post("/registrarEstado", (req, res) => {
-    const { nombre } = req.body;
-    const { superfamilia } = req.body;
-    let sql = "insert into Estados (nombre, superfamilia) values (?,?)";
-    db.query(sql, [nombre, superfamilia], (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.send(result);
-        }
-    })
+  const { nombre } = req.body;
+  const { superfamilia } = req.body;
+  let sql = "insert into Estados (nombre, superfamilia) values (?,?)";
+  db.query(sql, [nombre, superfamilia], (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
 });
 
-
-
 app.get("/actualizarRegistro/:id", (req, res) => {
-    const { id } = req.params;
-    let sql = "select * from registros where id = ?";
-    db.query(sql, [id], (err, result) => {
-        if (err) {
-            res.status(500).json({ error: "Hubo un error en la consulta a la base de datos" });
-        } else {
-            console.log(result[0].tipo, result[0].fecha, result[0].descripcion)
-            res.send(result);
-        }
-
-    })
-})
+  const { id } = req.params;
+  let sql = "select * from registros where id = ?";
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      res
+        .status(500)
+        .json({ error: "Hubo un error en la consulta a la base de datos" });
+    } else {
+      console.log(result[0].tipo, result[0].fecha, result[0].descripcion);
+      res.send(result);
+    }
+  });
+});
 
 app.get("/estados", (req, res) => {
-    let sql = "select * from estadocamara";
-    db.query(sql, (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.send(result);
-        }
-    })
+  let sql = "select * from estadocamara";
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
 });
 
 app.post("/crearCamara", (req, res) => {
-    const camaras  = req.body;
-    camaras.forEach(camara => {
-        // Insertar en la tabla Camara
-        let sqlCamara = "INSERT INTO camara (id, locacion) VALUES (?, ?)";
-        db.query(sqlCamara, [camara.id, camara.locacion], (err, resultCamara) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).json({ error: "Error al crear las cámaras" });
-            }
+  const camaras = req.body;
+  camaras.forEach((camara) => {
+    // Insertar en la tabla Camara
+    let sqlCamara = "INSERT INTO camara (id, locacion) VALUES (?, ?)";
+    db.query(sqlCamara, [camara.id, camara.locacion], (err, resultCamara) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Error al crear las cámaras" });
+      }
 
-            let sqlEstado = "INSERT INTO HistorialEstado (idCamara, idEstadoCamara, fechaInicio) VALUES ?";
-            db.query(sqlEstado, [idsCamaras], (err, resultEstado) => {
-                if (err) {
-                    console.error(err);
-                    return res.status(500).json({ error: "Error al establecer el estado de la cámara" });
-                }
-            });
-        });
+      let sqlEstado =
+        "INSERT INTO HistorialEstado (idCamara, idEstadoCamara, fechaInicio) VALUES ?";
+      db.query(sqlEstado, [idsCamaras], (err, resultEstado) => {
+        if (err) {
+          console.error(err);
+          return res
+            .status(500)
+            .json({ error: "Error al establecer el estado de la cámara" });
+        }
+      });
     });
-    res.send("Camaras creadas correctamente");
+  });
+  res.send("Camaras creadas correctamente");
 });
 
-
 app.get("/estadoActualCamara/:id", (req, res) => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    let sql = `
+  let sql = `
         SELECT 
             C.id AS CamaraID,
             C.locacion,
@@ -408,89 +418,125 @@ app.get("/estadoActualCamara/:id", (req, res) => {
         LIMIT 1;
     `;
 
+  console.log(id);
 
-    console.log(id)
-
-    db.query(sql, [id], (err, result) => {
-        if (err) {
-            res.status(500).json({ error: "Hubo un error en la consulta a la base de datos" });
-        } else {
-            if (result.length > 0) {
-                console.log(result[0].EstadoActual, result[0].FechaUltimoCambio);
-                res.send(result[0]);
-            } else {
-                res.status(404).json({ error: "No se encontró la cámara con el ID proporcionado" });
-            }
-        }
-    });
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      res
+        .status(500)
+        .json({ error: "Hubo un error en la consulta a la base de datos" });
+    } else {
+      if (result.length > 0) {
+        console.log(result[0].EstadoActual, result[0].FechaUltimoCambio);
+        res.send(result[0]);
+      } else {
+        res
+          .status(404)
+          .json({ error: "No se encontró la cámara con el ID proporcionado" });
+      }
+    }
+  });
 });
 
 app.post("/actualizarRegistro", (req, res) => {
-    const { id } = req.body;
-    const { tipo } = req.body;
-    const { descripcion } = req.body;
-    const { fecha } = req.body;
-    const { id_camara } = req.body;
-    const fecha_actual = moment().format('YYYY-MM-DD HH:mm:ss');
+  const { id } = req.body;
+  const { tipo } = req.body;
+  const { descripcion } = req.body;
+  const { fecha } = req.body;
+  const { id_camara } = req.body;
+  const fecha_actual = moment().format("YYYY-MM-DD HH:mm:ss");
 
-    //obtener el estado actual del registro y mandarlo al historial
-    let estado_actual = "select * from registros where id = ?";
-    db.query(estado_actual, [id], (err, result) => {
-        if (err) {
-            res.status(500).json({ error: "Hubo un error en la consulta a la base de datos" });
-        } else {
-            let actualizar_historial = "insert into historial (id_registro, tipo, fecha, fecha_modificacion, descripcion, id_camara) values (?,?,?,?,?,?)";
-            db.query(actualizar_historial, [id, result[0].tipo, result[0].fecha, fecha_actual, result[0].descripcion, result[0].id_camara], (err, result) => {
+  //obtener el estado actual del registro y mandarlo al historial
+  let estado_actual = "select * from registros where id = ?";
+  db.query(estado_actual, [id], (err, result) => {
+    if (err) {
+      res
+        .status(500)
+        .json({ error: "Hubo un error en la consulta a la base de datos" });
+    } else {
+      let actualizar_historial =
+        "insert into historial (id_registro, tipo, fecha, fecha_modificacion, descripcion, id_camara) values (?,?,?,?,?,?)";
+      db.query(
+        actualizar_historial,
+        [
+          id,
+          result[0].tipo,
+          result[0].fecha,
+          fecha_actual,
+          result[0].descripcion,
+          result[0].id_camara,
+        ],
+        (err, result) => {
+          if (err) {
+            res.status(500).json({
+              error: "Hubo un error en la consulta a la base de datos",
+            });
+          } else {
+            let actualizar_estado_registro =
+              "UPDATE registros SET fecha = ?, fecha_creacion = ?, tipo = ?, descripcion = ?, id_camara = ? WHERE id = ?";
+            db.query(
+              actualizar_estado_registro,
+              [fecha, fecha_actual, tipo, descripcion, id_camara, id],
+              (err, result) => {
                 if (err) {
-                    res.status(500).json({ error: "Hubo un error en la consulta a la base de datos" });
+                  res.status(500).json({
+                    error: "Hubo un error en la consulta a la base de datos",
+                  });
                 } else {
-                    let actualizar_estado_registro = "UPDATE registros SET fecha = ?, fecha_creacion = ?, tipo = ?, descripcion = ?, id_camara = ? WHERE id = ?";
-                    db.query(actualizar_estado_registro, [fecha, fecha_actual, tipo, descripcion, id_camara, id], (err, result) => {
-                        if (err) {
-                            res.status(500).json({ error: "Hubo un error en la consulta a la base de datos" });
-                        } else {
-                            res.send(result);
-                        }
-                    })
+                  res.send(result);
                 }
-            })
+              }
+            );
+          }
         }
-    })
-})
+      );
+    }
+  });
+});
 
 app.get("/historial/:id", (req, res) => {
-    const id = req.params.id;
+  const id = req.params.id;
 
-    let sql = "SELECT * from historial where id_registro = ? order by fecha_modificacion desc";
-    db.query(sql, [id], (err, result) => {
-        if (err) {
-            res.status(500).json({ error: "Hubo un error en la consulta a la base de datos" });
-        } else {
-            res.send(result);
-        }
-    })
-})
+  let sql =
+    "SELECT * from historial where id_registro = ? order by fecha_modificacion desc";
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      res
+        .status(500)
+        .json({ error: "Hubo un error en la consulta a la base de datos" });
+    } else {
+      res.send(result);
+    }
+  });
+});
 app.post("/guardarRegistro", (req, res) => {
-    const { id_camara } = req.body;
-    const { tipo } = req.body;
-    const { fecha } = req.body;
-    const { descripcion } = req.body
-    const { responsable } = req.body;
-    const fecha_actual = moment().format('YYYY-MM-DD HH:mm:ss');
-    let sql = "insert into registros (responsable, fecha_creacion, tipo, fecha, descripcion, id_camara) values (?,?,?,?,?,?)";
-    db.query(sql, [responsable, fecha_actual, tipo, fecha, descripcion, id_camara], (err, result) => {
-        if (err) {
-            res.status(500).json({ error: "Hubo un error en la consulta a la base de datos" });
-        } else {
-            res.send(result);
-        }
-    })
+  const { id_camara } = req.body;
+  const { tipo } = req.body;
+  const { fecha } = req.body;
+  const { descripcion } = req.body;
+  const { responsable } = req.body;
+  const fecha_actual = moment().format("YYYY-MM-DD HH:mm:ss");
+  let sql =
+    "insert into registros (responsable, fecha_creacion, tipo, fecha, descripcion, id_camara) values (?,?,?,?,?,?)";
+  db.query(
+    sql,
+    [responsable, fecha_actual, tipo, fecha, descripcion, id_camara],
+    (err, result) => {
+      if (err) {
+        res
+          .status(500)
+          .json({ error: "Hubo un error en la consulta a la base de datos" });
+      } else {
+        res.send(result);
+      }
+    }
+  );
 });
 
 app.get("/registro/:id", (req, res) => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    let sql = `
+  let sql = `
         SELECT 
             R.id, 
             R.responsable, 
@@ -506,19 +552,19 @@ app.get("/registro/:id", (req, res) => {
         WHERE 
             R.id = ?;
     `;
-    
-    db.query(sql, [id], (err, result) => {
-        if (err) {
-            console.error(err);
-            res.status(500).json({ error: "Error al obtener el registro" });
-        } else {
-            if (result.length > 0) {
-                res.json(result[0]);
-            } else {
-                res.status(404).json({ message: "Registro no encontrado" });
-            }
-        }
-    });
+
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: "Error al obtener el registro" });
+    } else {
+      if (result.length > 0) {
+        res.json(result[0]);
+      } else {
+        res.status(404).json({ message: "Registro no encontrado" });
+      }
+    }
+  });
 });
 
 //ale: no me funciona en front, pero si con curl
@@ -528,23 +574,20 @@ app.get("/registro/:id", (req, res) => {
 //"descripcion": "your_description_value"}' http://localhost:3001/actualizarRegistro/774
 
 app.put("/actualizarRegistro/:id", (req, res) => {
-    const registroId = req.params.id;
-    const { tipo, fecha, descripcion } = req.body;
+  const registroId = req.params.id;
+  const { tipo, fecha, descripcion } = req.body;
 
-    let sql = "UPDATE registros SET tipo = ?, fecha = ?, descripcion = ? WHERE id = ?";
+  let sql =
+    "UPDATE registros SET tipo = ?, fecha = ?, descripcion = ? WHERE id = ?";
 
-    db.query(sql, [tipo, fecha, descripcion, registroId], (err, result) => {
-        if (err) {
-            console.log(err);
-            res.status(500).json({ error: 'Error al actualizar el registro' });
-        } else {
-            res.json({ message: 'Registro actualizado con éxito' });
-        }
-    });
+  db.query(sql, [tipo, fecha, descripcion, registroId], (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).json({ error: "Error al actualizar el registro" });
+    } else {
+      res.json({ message: "Registro actualizado con éxito" });
+    }
+  });
 });
 
-
-
-app.listen(3001, () =>
-    console.log("Corriendo en 3001")
-);
+app.listen(80, () => console.log("Corriendo en 80"));

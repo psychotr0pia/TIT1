@@ -1,6 +1,7 @@
 import { Button } from "@material-tailwind/react";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Link from "./Apiconf";
 
 export default function Login() {
 
@@ -10,7 +11,7 @@ export default function Login() {
     const handleInput = (event) => { setValues(prev => ({ ...prev, [event.target.name]: [event.target.value] })) }
 
     useEffect(() => {
-        fetch('http://localhost:3001/', {
+        fetch(Link, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -34,7 +35,7 @@ export default function Login() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        fetch('http://localhost:3001/login', {
+        fetch(Link + "/login", {
             method: 'POST',
             credentials: 'include',
             headers: {
