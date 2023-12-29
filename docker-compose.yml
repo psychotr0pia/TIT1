@@ -25,7 +25,7 @@ services:
     #preguntarle al profe
   backend:
     build:
-      context: ./backend
+      context: ./backEnd
       dockerfile: Dockerfile-backend
     expose: 
       - 80
@@ -47,7 +47,7 @@ services:
 
   frontend:
     build:
-      context: ./frontend
+      context: ./frontEnd
       dockerfile: Dockerfile-frontend
       args:
         REACT_APP_ENDPOINT: http://api.regcam.informatica.uv.cl
